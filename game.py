@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 import pygame as pg
+import math as math
 
 def goodnessFormula(info:list):
   #info[1] = difficulty value
@@ -119,4 +120,46 @@ def vigenere(plain_text, key):
       encrypted += chr(65 + ((ord(plain_text[i]) + ord(keystream[i])) % 26))
   return encrypted
 
-playFairCipher("BALLOON")
+def euclidean_algorithm(a, b):
+  r = a % b
+  while r > 0:
+    a = b
+    b = r
+    r = a % b
+  return b
+
+def isPrime(i):
+  root = math.sqrt(i)
+  for m in range(2, math.floor(root)+1):
+    if euclidean_algorithm(i, m) != 1:
+      return False
+  return True   
+  
+def RSA(plain_text):
+  p = 0
+  q = 0
+  num = random.randint(1000, 10_000)
+  primes = [i for i in range(2, num) if isPrime(i)]
+  
+  p_index = random.randint(0, len(primes)-1)
+  q_index = random.randint(0, len(primes)-1)
+  while q_index == p_index:
+    q_index = random.randint(0, len(primes)-1)
+  
+  p = primes[p_index]
+  q = primes[q_index]
+  n = p*q
+  tao = 0
+  
+  if p > q: 
+    tao = abs((p-1)*(q-1))/euclidean_algorithm(p, q)
+  else:
+    tao = abs((p-1)*(q-1))/euclidean_algorithm(q, p)
+
+  e = random.randint(3, tao-1)
+  while euclidean_algorithm(e, tao) != 1:
+     e = random.randint(3, tao-1)
+
+  print(p, q, n, tao, e)
+
+RSA("Timothy")   
